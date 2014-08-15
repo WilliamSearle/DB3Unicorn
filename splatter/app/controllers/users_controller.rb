@@ -81,7 +81,17 @@ class UsersController < ApplicationController
    @user = User.delete_follows_params(params[:user])
  end
 
+# GET /users/splatts-feed/1
+ def splatts_feed
+   @feed = Splatt.find_by_sql()
+   render json: @feed
  end
+
+#Sorted list of splatts
+
+
+
+end
 
 
 
