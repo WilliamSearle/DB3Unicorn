@@ -1,4 +1,4 @@
-class UsersController < ApplicationController
+ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
@@ -47,61 +47,62 @@ class UsersController < ApplicationController
 
     head :no_content
   end
- 
-  # GET /users/follows/[:id]
+
+  #showFollows **********
   def show_follows
     @user = User.find(params[:id])
-
+    
     render json: @user.follows
-  end 
+  end
 
-  # GET /users/followers/[:id]
+  #showFollowers **********
   def show_followers
     @user = User.find(params[:id])
-
+    
     render json: @user.followers
   end
 
-  # Line 3 says type "id":2 line 4 says type "follows_id":3
-  # POST /users/follows
+
+  # addFollows 
   def add_follows
+    #@user = User.add_follows_params(params[:user])
     @user = User.find(params[:id])
     @follows = User.find(params[:follows_id])
 
-    if @user.follows << @follows
-      head :no_content
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
+    @user.follows << @follows
+    head :no_content
   end
+  
 
-  # DELETE /users/follows/1/2
-  def delete_follows
-    @user = User.find(params[:id])
-    @follows = User.find(params[:follows_id])
+ #deleteFollows
+ def delete_follows
+   @user = user.find(params[:id])
+   @follows = user.find(params[:follows_id])
 
-    if @user.follows.delete(@follows)
-      head :no_content
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
-  end
+   if @user.follows.delete(@follows)
+     head :no_content
+   else
+     render json: @user.errors, status: :unprocessable_entity
+   end
+end
 
 def splatts
   @user = User.find(params[:id])
 render json: @user.splatts
 end
 
-  # GET  /users/splatts-feed/1
-  def splatts_feed
-    @feed = Splatt.find_by_sql("SELECT splatts.body, splatts.user_id, splatts.id, splatts.created_at FROM splatts JOIN follows ON follows.followed_id=splatts.user_id WHERE follows.follower_id=#{params[:id]} ORDER BY created_at DESC")
 
-    render json: @feed
-end
+#Sorted list of Splatts
+
+# GET /users/splatts-feed/1
+ def splatts_feed
+   @feed = Splatt.find_by_sql("SELECT splatts.body, splatts.user_id, splatts.created_at FROM splatts JOIN follows ON follows.followed_id=splatts.user_id WHERE follows.follower_id=#{params[:id]} ORDER BY created_at DESC")
+   render json: @feed
+ end
 
 private
 
-def user_params(params)
-  params.permit(:email, :password, :name, :blurb)
+  def user_params(params)
+    params.permit(:emails, :password, :name, :blurb)
 end
 end

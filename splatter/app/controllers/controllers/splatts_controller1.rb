@@ -1,6 +1,6 @@
 class SplattsController < ApplicationController
   # GET /splatts
-  # GET /splatts.json  
+  # GET /splatts.json
   def index
     @splatts = Splatt.all
 
@@ -18,7 +18,7 @@ class SplattsController < ApplicationController
   # POST /splatts
   # POST /splatts.json
   def create
-    @splatt = Splatt.new(splatts_params(params[:splatt]))
+    @splatt = Splatt.new(params[:splatt])
 
     if @splatt.save
       render json: @splatt, status: :created, location: @splatt
@@ -26,8 +26,6 @@ class SplattsController < ApplicationController
       render json: @splatt.errors, status: :unprocessable_entity
     end
   end
-
-
 
   # DELETE /splatts/1
   # DELETE /splatts/1.json
@@ -38,10 +36,10 @@ class SplattsController < ApplicationController
     head :no_content
   end
 
-  
-
+  # Awesome
   private
-	def splatts_params(params)
-	  params.permit(:body, :user_id)
-end
+  def splatts_params(params)
+    params.permit(:body, :user_id)
+  end
+
 end

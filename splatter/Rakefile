@@ -3,4 +3,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Splatter::Application.load_tasks
+Splatter1::Application.load_tasks
