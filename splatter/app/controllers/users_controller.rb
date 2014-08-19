@@ -18,7 +18,7 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    @user = User.new(user_params(params[:user]))
+    @user = User.new user_params(params[:user])
 
     if @user.save
       render json: @user, status: :created, location: @user
@@ -32,7 +32,7 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if @user.update(user_params(params[:user]))
+    if @user.update user_params(params[:user])
       head :no_content
     else
       render json: @user.errors, status: :unprocessable_entity
@@ -66,9 +66,10 @@ class UsersController < ApplicationController
   # POST /users/follows
   def add_follows
     @user = User.find(params[:id])
+
     @follows = User.find(params[:follows_id])
 
-    if @user.follows << @follows
+    if @user.follows << @followed
       head :no_content
     else
       render json: @user.errors, status: :unprocessable_entity
@@ -92,11 +93,11 @@ def splatts
 render json: @user.splatts
 end
 
-  # GET  /users/splatts-feed/1
-  def splatts_feed
-    @feed = Splatt.find_by_sql("SELECT splatts.body, splatts.user_id, splatts.id, splatts.created_at FROM splatts JOIN follows ON follows.followed_id=splatts.user_id WHERE follows.follower_id=#{params[:id]} ORDER BY created_at DESC")
+# GET  /users/splatts-feed/1
+def splatts_feed
+  @feed = Splatt.find_by_sql("SELECT splatts.body, splatts.user_id, splatts.id, splatts.created_at FROM splatts JOIN follows ON follows.followed_id=splatts.user_id WHERE follows.follower_id=#{params[:id]} ORDER BY created_at DESC")
 
-    render json: @feed
+  render json: @feed
 end
 
 private
