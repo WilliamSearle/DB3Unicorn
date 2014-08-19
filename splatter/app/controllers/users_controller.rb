@@ -18,7 +18,7 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    @user = User.new user_params(params[:user])
+    @user = User.new(user_params(params[:user]))
 
     if @user.save
       render json: @user, status: :created, location: @user
@@ -32,7 +32,7 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if @user.update user_params(params[:user])
+    if @user.update(user_params(params[:user]))
       head :no_content
     else
       render json: @user.errors, status: :unprocessable_entity
@@ -62,7 +62,7 @@ class UsersController < ApplicationController
     render json: @user.followers
   end
 
-  # Line 3 says type "id":2 line 4 says type "follows_id":3
+
   # POST /users/follows
   def add_follows
     @user = User.find(params[:id])
@@ -101,7 +101,8 @@ end
 
 private
 
-def user_params(params)
-  params.permit(:email, :password, :name, :blurb)
-end
+  def user_params(params)
+    params.permit(:email, :password, :name, :blurb)
+  end
+
 end

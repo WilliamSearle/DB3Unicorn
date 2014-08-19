@@ -41,7 +41,7 @@ class SplattsController < ApplicationController
   
 
   private
-	def splatts_params(params)
-	  params.permit(:body, :user_id)
-end
-end
+    def splatts_params(params)
+      params.permit(:body, :user_id)
+    end
+  end
