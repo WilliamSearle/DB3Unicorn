@@ -1,6 +1,4 @@
 class UsersController < ApplicationController
-  before_filter :set_headers
-  
   # GET /users
   # GET /users.json
   def index
@@ -12,21 +10,26 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-    @user = User.find(params[:id])
-
-    render json: @user
+	db = UserRepository.new(Riak::Client.new)
+	@user = db.find(params[:id])
+	render json: @user
   end
 
   # POST /users
   # POST /users.json
   def create
-    @user = User.new(user_params(params[:user]))
-
-    if @user.save
-      render json: @user, status: :created, location: @user
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
+	@user = User.new
+	@user.email = params[:email]
+	@user.name = params[:name]
+	@user.password = params[:password]
+	@user.blurb = params[:blurb]
+	
+	db = UserRepository.new(Riak::Client.new)
+	if db.save(@user)
+		render json: @user, status: :created, location: @user
+	else
+		render json: "error", status: :unprocessable_entity
+	end
   end
 
   # PATCH/PUT /users/1
@@ -61,57 +64,49 @@ class UsersController < ApplicationController
   end 	
 
   #GET SHOW_FOLLOWERS
-  def show_followers
-    @user = User.find(params[:id])
-    render json: @user.followers
+  def show_follows
+  	@user = User.find(params[:id])
+ 	render json: @user.followed_by #followers of a given user
   end
 
   #POST ADD_FOLLOWS
   def add_follows
-    @user = User.find(params[:id])
-    @follows = User.find(params[:follows_id])
-
-    #nav property - user.follows
-    if @user.follows << @follows
-
-      #204 No Content HTTP status 
-      head :no_content
-
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
+	db = UserRepository.new(Riak::Client.new)
+	@follower = db.find(params[:id])
+	@followed = db.find(params[:follows_id])
+		
+	if db.follow(@follower, @followed)
+		head: no_content
+	else
+		render json: "error saving follow relationship", status: :unprocessable_entity
+	end
   end	
 
   #POST DELETE_FOLLOWS
   def delete_follows
-    @user = User.find(params[:id])
-    @follows = User.find(params[:follows_id])
-
-    if @user.follows.delete(@follows)
-
-      #204 No Content HTTP status 
-      head :no_content
-
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
+	db = UserRepository.new(Riak::Client.new)
+	@follower = db.find(params[:id])
+	@followed = db.find(params[:follows_id])
+		
+	if db.follow.delete(@follower, @followed)
+		head :no_content
+	else
+		render json: "error deleting unfollow relationship", status: :unprocessable_entity
+	end	
   end
 
   #SPLATTS
   def splatts
-    @user = User.find(params[:id])
-    render json: @user.splatts
-  end 
-
-
+	db = UserRepository.new(Riak::Client.new)
+	@user = db.find(params[:id])
+	db = SplattRepository.new(Riak::Client.new, @user)
+	render json: db.all
+  end
+ 
   #FEED
   def feed
     @feed = Splatt.find_by_sql("SELECT splatts.body, splatts.user_id, splatts.id, splatts.created_at FROM splatts JOIN follows ON follows.followed_id=splatts.user_id WHERE follows.follower_id=#{params[:id]} ORDER BY created_at DESC")
     render json: @feed
-  end
-  
-  def set_headers
-	response.headers['Access-Control-Allow-Origin'] = '*'
   end
 
 end
