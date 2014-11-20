@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html ng-app="splatter-web">
+	<head>
+		<title>Basic Splatter Client</title>
+		<script src="angular.min.js"></script>
+		<script src="angular-resource.js"></script>
+		<script src="app.js"></script>
+		
+		<style>
+		body {
+		background-image: url("splatturd.jpg");
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+		
+		}
+		
+		#container {
+		background-color: orange;
+		width: 500px;
+		height: 100%;
+		padding: 20px;
+		margin: 0 auto;
+		}
+		
+		legend {
+		font-size: 25px;
+		color: yellow;
+		}
+		
+		fieldset {
+		border: 2px solid black;
+		margin-top: 10px;
+		}
+		
+		
+		
+		</style>
+	</head>
+	<body>
+	<div id="container">
+
+		<div ng-controller="CreateUserController as user">
+			<form name="myform" ng-submit="user.CreateUser()">
+				<fieldset>
+				<legend>Create User</legend>
+				<input type="text" ng-model="user.data.name" placeholder="User Name"></input> <br />
+				<input type="text" ng-model="user.data.email" placeholder="User Email"></input> <br />				
+				<input type="text" ng-model="user.data.blurb" placeholder="User Blurb"></input> <br />
+				<input type="text" ng-model="user.data.password" placeholder="User Password"></input> <br />
+				<input type="submit" value="Create User" />
+				</fieldset>
+			</form>
+		</div>
+
+
+		<div ng-controller="UserReadController as user">
+			<form name="myform" ng-submit="user.ViewModel()">
+				<fieldset>
+				<legend>Read User</legend>
+				<input type="text" ng-model="user.data.id" placeholder="User Id"></input>
+				<input type="submit" value="Submit" />
+				<p>Name: {{user.u.name}}</p>
+				<p>Email: {{user.u.email}}</p>
+				<p>Blurb: {{user.u.blurb}}</p>
+
+				<div ng-repeat="splatt in user.splatts"> 
+					<p> {{splatt.body}}</p>
+				</div>
+			</div>
+				</fieldset>
+			</form>
+
+		<div ng-controller="UpdateUserController as user">
+			<form name="myform" ng-submit="user.UpdateUser()">
+				<fieldset>
+				<legend>Update User</legend>
+				<input type="text" ng-model="user.data.id" placeholder="User Id"></input><br />
+				<input type="text" ng-model="user.data.name" placeholder="User Name"></input> <br />
+				<input type="text" ng-model="user.data.email" placeholder="User Email"></input><br />
+				<input type="text" ng-model="user.data.blurb" placeholder="User Blurb"></input><br />
+				<input type="text" ng-model="user.data.password" placeholder="User Password"></input><br />				
+				<input type="submit" value="Update User" />
+				</fieldset>
+			</form>
+		</div>
+
+		<div ng-controller="DeleteUserController as user">
+			<form name="myform" ng-submit="user.DeleteUser()">
+				<fieldset>
+				<legend>Delete User</legend>
+				<input type="text" ng-model="user.data.id" placeholder="User Id"></input><br />
+				<input type="submit" value="Delete User" />
+				</fieldset>
+			</form>
+		</div>
+
+		<div ng-controller="AddFollowerController user">
+			<form name="myform" ng-submit="user.AddFollower()">
+				<fieldset>
+				<legend>Follow User</legend>
+				<input type="text" ng-model="user.data.userId" placeholder="User Id"></input><br />
+				<input type="text" ng-model="user.data.followerId" placeholder="Follower Id"></input>
+				<input type="submit" value="Follow User" />
+				</fieldset>
+			</form>
+		</div>
+		
+		<div ng-controller="UnFollowController user">
+			<form name="myform" ng-submit="user.UnFollow()">
+				<fieldset>
+				<legend>Unfollow User</legend>
+				<input type="text" ng-model="user.data.userId" placeholder="User Id"></input><br />
+				<input type="text" ng-model="user.data.followerId" placeholder="Follower Id"></input>
+				<input type="submit" value="UnFollow User" />
+				</fieldset>
+			</form>
+		</div>
+
+		<div ng-controller="CreateSplattController splatt">
+			<form name="myform" ng-submit="user.CreateSplatt()">
+				<fieldset>
+				<legend>Create Splatt</legend>
+				<input type="text" ng-model="splatt.data.id" placeholder="User Id"></input><br />
+				<input type="text" ng-model="splatt.data.splatt" placeholder="Your splatt message"></input>
+				<input type="submit" value="Add Splatt" />
+				</fieldset>
+			</form>
+		</div>
+		</div>
+	</body>
+</html>
+

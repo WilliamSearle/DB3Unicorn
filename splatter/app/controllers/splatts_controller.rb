@@ -1,6 +1,6 @@
 class SplattsController < ApplicationController
   # GET /splatts
-  # GET /splatts.json  
+  # GET /splatts.json
   def index
     @splatts = Splatt.all
 
@@ -27,8 +27,6 @@ class SplattsController < ApplicationController
     end
   end
 
-
-
   # DELETE /splatts/1
   # DELETE /splatts/1.json
   def destroy
@@ -38,10 +36,10 @@ class SplattsController < ApplicationController
     head :no_content
   end
 
-  
-
-  private
-    def splatts_params(params)
-      params.permit(:body, :user_id)
-    end
+  #The permit method returns a copy of the parameters object, returning
+  #only the permitted keys and values. So when creating a new ActiveRecord model, 
+  #only the permitted attributes are passed into the model.
+  def splatts_params(params)
+    params.permit(:body, :user_id)
   end
+end

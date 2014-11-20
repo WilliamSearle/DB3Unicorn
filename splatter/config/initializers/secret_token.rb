@@ -16,4 +16,4 @@
 # Using secret_token for rails3 compatibility. Change to secret_key_base
 # to avoid deprecation warning.
 # Can be safely removed in a rails3 api-only application.
-Splatter1::Application.config.secret_token = '65d949df879f4653ab6caed23cb157efe830416f9f17cb48b4f482e097664b8a1b1b6360e34036c17d5575f0e2d1a3e731bd4af73f1b05ef6d81d8aeb9bd2286'
+Splatter::Application.config.secret_token = '7107b5cfc9521401f599f39e3563b6ed9668bbde7d560f5bf6dfef01814328a6368ee6ce0c01d1e33f13a36603fe18cb0280ac225c833cc3112f60c0b25c6d25'

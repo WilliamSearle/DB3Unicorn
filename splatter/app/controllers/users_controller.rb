@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  before_filter :set_headers
+  
   # GET /users
   # GET /users.json
   def index
@@ -18,7 +20,7 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    @user = User.new user_params(params[:user])
+    @user = User.new(user_params(params[:user]))
 
     if @user.save
       render json: @user, status: :created, location: @user
@@ -32,7 +34,7 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if @user.update user_params(params[:user])
+    if @user.update(params[:user])
       head :no_content
     else
       render json: @user.errors, status: :unprocessable_entity
@@ -47,63 +49,69 @@ class UsersController < ApplicationController
 
     head :no_content
   end
- 
-  # GET /users/follows/[:id]
+  
+  def user_params(params)
+    params.permit(:email, :password, :name, :blurb)
+  end
+
+  #GET SHOW_FOLLOWS
   def show_follows
     @user = User.find(params[:id])
-
     render json: @user.follows
-  end 
+  end 	
 
-  # GET /users/followers/[:id]
+  #GET SHOW_FOLLOWERS
   def show_followers
     @user = User.find(params[:id])
-
     render json: @user.followers
   end
 
-
-  # POST /users/follows
+  #POST ADD_FOLLOWS
   def add_follows
     @user = User.find(params[:id])
-
     @follows = User.find(params[:follows_id])
 
-    if @user.follows << @followed
+    #nav property - user.follows
+    if @user.follows << @follows
+
+      #204 No Content HTTP status 
       head :no_content
+
     else
       render json: @user.errors, status: :unprocessable_entity
     end
-  end
+  end	
 
-  # DELETE /users/follows/1/2
+  #POST DELETE_FOLLOWS
   def delete_follows
     @user = User.find(params[:id])
     @follows = User.find(params[:follows_id])
 
     if @user.follows.delete(@follows)
+
+      #204 No Content HTTP status 
       head :no_content
+
     else
       render json: @user.errors, status: :unprocessable_entity
     end
   end
 
-def splatts
-  @user = User.find(params[:id])
-render json: @user.splatts
-end
+  #SPLATTS
+  def splatts
+    @user = User.find(params[:id])
+    render json: @user.splatts
+  end 
 
-# GET  /users/splatts-feed/1
-def splatts_feed
-  @feed = Splatt.find_by_sql("SELECT splatts.body, splatts.user_id, splatts.id, splatts.created_at FROM splatts JOIN follows ON follows.followed_id=splatts.user_id WHERE follows.follower_id=#{params[:id]} ORDER BY created_at DESC")
 
-  render json: @feed
-end
-
-private
-
-  def user_params(params)
-    params.permit(:email, :password, :name, :blurb)
+  #FEED
+  def feed
+    @feed = Splatt.find_by_sql("SELECT splatts.body, splatts.user_id, splatts.id, splatts.created_at FROM splatts JOIN follows ON follows.followed_id=splatts.user_id WHERE follows.follower_id=#{params[:id]} ORDER BY created_at DESC")
+    render json: @feed
+  end
+  
+  def set_headers
+	response.headers['Access-Control-Allow-Origin'] = '*'
   end
 
 end
